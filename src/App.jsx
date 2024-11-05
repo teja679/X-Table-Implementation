@@ -1,34 +1,55 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
+import { data } from './data'
+
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [sortedData, setSortedData] = useState(data)
 
+  const sortDataByDate = () => {
+    const newData = [...sortedData].sort((a, b) => {
+      if (b.date === a.date) {
+        return b.views - a.views;
+      }
+      return new Date(b.date) - new Date(a.date)
+    });
+    setSortedData(newData);
+  }
+  const sortDataByViews = () => {
+    const newData = [...sortedData].sort((a, b) => {
+      if (b.views === a.views) {
+        return new Date(b.date) - new Date(a.date)
+      }
+      return b.views - a.views;
+    });
+    setSortedData(newData);
+  }
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <main className='App'>
+      <h1>Date and Views Table</h1>
+      <section className='btns'>
+        <button onClick={sortDataByDate}>Sort by Date</button>
+        <button onClick={sortDataByViews}>Sort by Views</button>
+      </section>
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Views</th>
+            <th>Article</th>
+          </tr>
+        </thead>
+        <tbody>
+          {sortedData && sortedData.map(({ date, views, article }) => (
+            <tr key={`${date}_${article}_${views}`}>
+              <td>{date}</td>
+              <td>{views}</td>
+              <td>{article}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </main>
   )
 }
 
